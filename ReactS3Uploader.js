@@ -82,8 +82,8 @@ var ReactS3Uploader = createReactClass({
     });
   },
 
-  abort: function() {
-    this.myUploader && this.myUploader.abortUpload();
+  abort: function(fileName) {
+    this.myUploader && this.myUploader.abortUpload(fileName);
   },
 
   clear: function() {

@@ -9,6 +9,7 @@ S3Upload.prototype.signingUrlMethod = "GET";
 S3Upload.prototype.successResponses = [200, 201];
 S3Upload.prototype.fileElement = null;
 S3Upload.prototype.files = null;
+S3Upload.prototype.httpRequests = [];
 
 S3Upload.prototype.onFinishS3Put = function(signResult, file) {
   return console.log("base.onFinishS3Put()", signResult.publicUrl);
@@ -201,7 +202,9 @@ S3Upload.prototype.uploadToS3 = function(file, signResult) {
   } else {
     xhr.setRequestHeader("x-amz-acl", "public-read");
   }
-  this.httprequest = xhr;
+
+  this.httpRequests[file.name] = xhr;
+
   return xhr.send(file);
 };
 
@@ -212,8 +215,10 @@ S3Upload.prototype.uploadFile = function(file) {
   return this.executeOnSignedUrl(file, uploadToS3Callback);
 };
 
-S3Upload.prototype.abortUpload = function() {
-  this.httprequest && this.httprequest.abort();
+S3Upload.prototype.abortUpload = function(fileName) {
+  if (this.httpRequests[fileName]) {
+    this.httpRequests[fileName].abort();
+  }
 };
 
 module.exports = S3Upload;
